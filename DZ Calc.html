@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .container {
+            width: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .main  {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        #keyboard button {
+            width: 40px;
+            height: 40px;
+            font-size: 14px;
+            margin: 8px;
+        }
+
+        #actions button {
+            width: 40px;
+            height: 30px;
+            font-size: 10px;
+            margin: 5px;
+        }
+
+        #messages {
+            
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="container">
+        <div class="upheader">
+            <input type="text" disabled id="upinp">
+        </div>
+        <div class="header">
+            <div id="messages">Деление на ноль невозможно</div>
+            <input type="text" disabled id="inp">
+        </div>
+        <div class="main" id="actions">
+            
+        </div>
+        <div class="main" id="keyboard">
+
+        </div>
+        <div class="main" id="messages">
+
+        </div>
+    </div>
+
+    <script>
+        const calc = {
+            number: '',            
+            _actions: ["+", "-", "*", "/", "C", "back", "="],
+            _keyboard: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "+/-", "0", "."],
+            _result: null,
+            _first:null,
+            _second:null,
+            _operand:null,
+            input: null,
+            upinput: null,
+            //containerKeyboard: null,
+
+
+            init() {
+                this.number = '';
+                this.containerKeyboard = document.querySelector('#container');
+                this._result=0;
+                this._first=0;
+                this._second=0;
+                this._operand="+";                
+                this.input = document.querySelector('#inp');
+                this.upinput = document.querySelector('#upinp');
+                this.input.value=0;
+                this.upinput.value=0;
+                this._renderKeyboard("actions", this._actions);
+                this._renderKeyboard("keyboard", this._keyboard);
+                this._handleEvents(); //псевдо инкапсуляция (это из ООП)
+            },            
+            _handleEvents() {
+                this.containerKeyboard.addEventListener('click', evt => {
+                    if (evt.target.name == 'keyboard' || evt.target.parentNode.name == 'keyboard') {
+                       let dataSet = evt.target.name == 'keyboard' ? evt.target.dataset : evt.target.parentNode.dataset;
+                       //this._addNum(dataSet.value);
+                       if (dataSet.value=="+/-"){
+                            this._addMinus(dataSet.value);
+                       } else {
+                        this._addNum(dataSet.value);
+                       }
+                       console.log(dataSet.value);
+                    }
+                    if (evt.target.name == 'actions' || evt.target.parentNode.name == 'actions') {
+                       let dataSet = evt.target.name == 'actions' ? evt.target.dataset : evt.target.parentNode.dataset;
+                       this._chose(dataSet.value);                    
+                    }                    
+                })
+            },
+            _renderKeyboard(container, items) {
+                let str = '';
+                let cont = document.querySelector(`#${container}`);
+                items.forEach(item => {
+                    str += `<button name="${container}" data-value="${item}"><span>${item}</span></button>`;
+                });
+                cont.innerHTML = str;
+            },
+            _addNum(num) {
+                this.number += num;
+                this.input.value = this.number;
+            },
+            _addMinus(num){
+                this.number = num === '+/-' ? this.number.includes('-') ? this.number.slice(1) : '-' + this.number : this.number+=num;
+                this.input.value=this.number;
+                this._first=this.number;
+            },
+            _firstOperation(num1, oper){
+                this._first=num1;
+                this.number=null;
+                this.input.value=null;
+            },
+            _chose(oper){                
+                switch(oper){
+                            case "+":
+                                this._sum(this.upinput.value, this.input.value);                                
+                                this.upinput.value=this._result;
+                                this.number="";
+                                this.input.value="";
+                                this._operand="+";
+                                break;
+                            case "-":
+                                this._sub(this.upinput.value, this.input.value);                                
+                                this.upinput.value=this._result;
+                                this.number="";
+                                this.input.value="";
+                                this._operand="-";
+                                break;
+                            case "*":
+                                this._mul(this.upinput.value, this.input.value);                                
+                                this.upinput.value=this._result;
+                                this.number="";
+                                this.input.value="";
+                                this._operand="*";
+                                break;
+                            case "/":
+                                this._div(this.upinput.value, this.input.value);                                
+                                this.upinput.value=this._result;
+                                this.number="";
+                                this.input.value="";
+                                this._operand="/";
+                                break;
+                            case "C":                                                                
+                                this.upinput.value=0;
+                                this.number="";
+                                this.input.value=0;
+                                this._operand="+";
+                                break;
+                            case "back":
+                                this.number = this.number.slice(0, -1);
+                                this.input.value=this.number;
+                                break;
+                            case "=":
+                                this._chose(this._operand);
+                            default:
+                        }
+                       console.log(oper);
+            },
+            _sum(num1, num2) {                
+                this._result = (+num1) + (+num2);
+               
+            },
+            _sub(num1, num2) {                
+                this._result = (+num1) - (+num2);
+                
+            },
+            _mul(num1, num2) {                
+                this._result = (+num1) * (+num2);
+               
+            },
+            _div(num1, num2) {
+                
+                if (+num2 === 0) {
+                    document.querySelector("#messages").style.display = 'flex';
+                    document.querySelector('#inp').style.display = 'none';
+                    setTimeout(() => { document.querySelector("#messages").style.display = 'none';
+                    document.querySelector('#inp').style.display = 'flex';
+                     }, 1500)
+                    return false;
+                }
+                let res = (+num1) / (+num2);
+                this._result = res;
+                //this._prevOperand = res;
+                return true;
+            },
+        }
+
+        calc.init();
+    </script>
+</body>
+</html>
