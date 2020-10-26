@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <div class="tas1">
+        <h2>Task1 results in console</h2>
+        <button onclick="task1()">task 5-6</button>
+        <script>
+            function task1() {       
+                let prime = 1;
+                let primeArr = [];
+
+                while (prime <= 100) {
+                    if (prime == 1) {
+                        primeArr.push(1)
+                } else {
+                    let result = 2;
+                    let i = 2;
+                while (prime % i !== 0 ){
+                    i += 1;
+                    result +=1;
+                } 
+                if (result == prime) {
+                    primeArr.push(result);
+            }
+        }
+        prime += 1;
+    }
+
+    console.log(primeArr);
+    }
+    </script>
+    </div>
+    <div class="tas2">
+        <h2>Быки и коровы запусти в консоли - task2()</h2>
+        <script>
+            function task2() {
+                console.log("В наличии 10 шагов.");
+                let pc = startGame();
+                console.log(`Копьютер загадал число: ${pc}. (Подсказка чтобы Вам было легче проверить)`);
+                let i = 0;
+                while(i < 10) {
+                    let reply = prompt("Назови 4-х значное число").split('');
+                    console.log(compare(pc, reply));
+                    if (compare(pc, reply) == "Победа") {
+                        i=10;
+                    }
+                    ++i;
+                }
+            }
+            function startGame() {
+                let numb = Math.floor(Math.random()*10000); 
+                numb = String(numb).split(''); if (numb.length == 3) { numb.push("0"); }
+                return numb;
+                
+            }
+            function compare(pc, human) {
+                let result=[];
+                pc.forEach(function(element, index) {
+                    human.forEach(function(element2, index2) {
+                        if (element == element2 && index == index2) {
+                            result.push(`Бык ${element} is ${index}`);
+                        }else if (element == element2) {
+                            result.push(`Корова ${element} is ${index}`);
+                        }
+                    });
+                });
+                let k = 0;
+                result.forEach(item => {
+                    if (item.indexOf("Бык", 0) != -1) {
+                        ++k;
+                    }
+                    if (k == 4) {
+                        result = "Победа" 
+                    }
+                });
+                return result;
+            }
+        </script>
+    </div>
+    <div class="tas3">
+        <button onclick="task3()">task 3 результат в консоли</button>
+        <script>
+            function task3() {
+                for(let i = 0; i < 10; console.log(i), i++) {}
+            }
+        </script>
+    </div>
+    <div class="tas4">
+        <button onclick="task4()">task 4 результат в консли</button>
+        <script>
+            function task4() {
+                for (let i = 1, k = ""; i < 20; i++) {
+                    k += "*";
+                    console.log (k);
+                }
+            }
+        </script>
+    </div>
+</body>
+</html>

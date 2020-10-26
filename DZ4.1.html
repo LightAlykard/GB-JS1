@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script>
+        console.log('Ответ задача 1');
+        
+        var max = 999;
+        var chislo = {
+          number: Math.round(Math.random() * max), 
+          one: 0,
+          ten: 0,
+          hundred: 0,
+        };
+        if (chislo.number <= 9){
+            chislo.one = chislo.number;
+        } else if (chislo.number <= 999 && chislo.number >= 0){
+            chislo.one = Math.floor(chislo.number % 10);
+            chislo.ten = Math.floor(chislo.number / 10 % 10);
+            chislo.hundred = Math.floor(chislo.number / 100 % 10);
+        }else {
+            chislo.number = 0;
+            console.log('Вы ввели число за диапазоном 0 - 999');
+        }
+        console.log(chislo);
+
+    </script>
+    
+</body>
+</html>
